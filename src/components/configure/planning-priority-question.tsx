@@ -32,9 +32,10 @@ export function PlanningPriorityQuestion() {
       title="What's most important for your project?"
       subtitle="Select the priority that matters most for your door solution."
     >
-      {PRIORITY_OPTIONS.map((option) => (
+      {PRIORITY_OPTIONS.map((option, index) => (
         <ConfigureOptionCard
           key={option.id}
+          index={index + 1}
           title={option.title}
           description={option.description}
           icon={option.icon}

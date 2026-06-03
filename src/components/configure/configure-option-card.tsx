@@ -7,9 +7,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { FrameMarkers } from "@/components/ui/frame-button";
 import { cn } from "@/lib/utils";
 
 type ConfigureOptionCardProps = {
+  index: number;
   title: string;
   description: string;
   icon: string;
@@ -17,6 +19,7 @@ type ConfigureOptionCardProps = {
 };
 
 export function ConfigureOptionCard({
+  index,
   title,
   description,
   icon,
@@ -25,26 +28,34 @@ export function ConfigureOptionCard({
   const card = (
     <Card
       className={cn(
-        "h-full min-h-[320px] cursor-pointer rounded-[8px] bg-black-50 py-0 transition-all",
-        "ring-black-100 hover:ring-yellow-600/60 hover:shadow-sm",
+        "group relative aspect-square w-full cursor-pointer overflow-visible rounded-[4px] border border-black-50 bg-black-50 py-0 ring-0 transition-colors",
+        "hover:border-0 hover:bg-yellow-300",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-600"
       )}
     >
+      <FrameMarkers
+        size={20}
+        offset={5}
+        hoverOffset={6}
+        className="text-black-50 group-hover:text-black-950"
+      />
       <CardHeader className="!flex h-full flex-col gap-6 p-6">
-        <span
-          className={cn(
-            "flex aspect-square w-full items-center justify-center rounded-[8px]",
-            "bg-white text-black-700 transition-colors",
-            "group-hover:bg-yellow-100 group-hover:text-black-950"
-          )}
-        >
-          <MaterialIcon name={icon} size={88} weight={200} />
+        <span className="text-sm font-semibold text-black-950">
+          {String(index).padStart(2, "0")}
         </span>
+        <div className="flex flex-1 w-full items-center justify-center">
+          <MaterialIcon
+            name={icon}
+            size={88}
+            weight={200}
+            className="text-black-500 transition-colors group-hover/card:text-black-950"
+          />
+        </div>
         <div className="flex flex-col gap-2">
           <CardTitle className="text-lg font-semibold leading-tight text-black-950">
             {title}
           </CardTitle>
-          <CardDescription className="text-sm leading-relaxed text-black-500">
+          <CardDescription className="text-sm leading-relaxed text-black-500 transition-colors group-hover/card:text-black-800">
             {description}
           </CardDescription>
         </div>
@@ -54,11 +65,15 @@ export function ConfigureOptionCard({
 
   if (href) {
     return (
-      <Link href={href} className="group text-left">
+      <Link href={href} className="block w-full text-left">
         {card}
       </Link>
     );
   }
 
-  return <button type="button" className="group text-left">{card}</button>;
+  return (
+    <button type="button" className="block w-full text-left">
+      {card}
+    </button>
+  );
 }

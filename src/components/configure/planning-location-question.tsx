@@ -35,9 +35,10 @@ export function PlanningLocationQuestion() {
       title="Where will the door be installed?"
       subtitle="Choose the environment that best describes your installation."
     >
-      {INSTALLATION_OPTIONS.map((option) => (
+      {INSTALLATION_OPTIONS.map((option, index) => (
         <ConfigureOptionCard
           key={option.id}
+          index={index + 1}
           title={option.title}
           description={option.description}
           icon={option.icon}

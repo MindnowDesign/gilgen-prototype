@@ -34,9 +34,10 @@ export function ReplacingNeedQuestion() {
       title="What do you need?"
       subtitle="Choose the outcome that best describes your replacement goal."
     >
-      {NEED_OPTIONS.map((option) => (
+      {NEED_OPTIONS.map((option, index) => (
         <ConfigureOptionCard
           key={option.id}
+          index={index + 1}
           title={option.title}
           description={option.description}
           icon={option.icon}

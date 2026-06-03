@@ -34,9 +34,10 @@ export function ReplacingTypeQuestion() {
       title="What are you replacing?"
       subtitle="Select the door type that matches your existing installation."
     >
-      {REPLACEMENT_TYPE_OPTIONS.map((option) => (
+      {REPLACEMENT_TYPE_OPTIONS.map((option, index) => (
         <ConfigureOptionCard
           key={option.id}
+          index={index + 1}
           title={option.title}
           description={option.description}
           icon={option.icon}

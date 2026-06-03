@@ -21,7 +21,7 @@ const DOOR_TYPE_OPTIONS = [
   {
     id: "unsure",
     title: "I'm not sure",
-    description: "Help me find the right solution.",
+    description: "Help me find the solution that fits my needs.",
     icon: "help_outline",
     href: "/configure/unsure/help",
   },
@@ -36,9 +36,10 @@ export function DoorTypeQuestion() {
       title="What are you working on?"
       subtitle="Select the option that best matches your project. You can refine your choice in the next steps."
     >
-      {DOOR_TYPE_OPTIONS.map((option) => (
+      {DOOR_TYPE_OPTIONS.map((option, index) => (
         <ConfigureOptionCard
           key={option.id}
+          index={index + 1}
           title={option.title}
           description={option.description}
           icon={option.icon}

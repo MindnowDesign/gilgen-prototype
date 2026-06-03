@@ -43,7 +43,7 @@ export function ConfigureQuestionLayout({
           </div>
 
           <div className="flex w-full max-w-3xl flex-col items-center text-center">
-            <p className="mb-6 text-xs font-medium tracking-[0.2em] text-black-400 uppercase">
+            <p className="mb-6 text-xs font-[500] tracking-[0.2em] text-black-400 uppercase">
               Question {step} of {totalSteps}
             </p>
 

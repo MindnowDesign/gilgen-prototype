@@ -25,11 +25,11 @@ export function WelcomeScreen() {
 
       <main className="flex flex-col items-center justify-center px-8 md:px-12">
         <div className="flex w-full max-w-3xl flex-col items-center text-center">
-          <h1 className="text-4xl font-bold tracking-tight md:text-5xl lg:text-[3.25rem] lg:leading-tight">
+          <h1 className="text-4xl font-bold tracking-tight text-black-50 md:text-5xl lg:text-[3.25rem] lg:leading-tight">
             Welcome to Gilgen Configurator
           </h1>
 
-          <p className="mt-8 max-w-xl text-base leading-relaxed text-black-300 md:text-lg">
+          <p className="mt-8 max-w-xl text-base leading-relaxed text-black-200 md:text-lg">
             Before we start, please answer these{" "}
             <span className="font-semibold text-white">3 questions</span> to
             design the best experience and solution for you and your needs.

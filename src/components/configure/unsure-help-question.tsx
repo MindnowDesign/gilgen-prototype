@@ -36,9 +36,10 @@ export function UnsureHelpQuestion() {
       title="How can we help you?"
       subtitle="Tell us where you are in your journey so we can guide you to the right path."
     >
-      {HELP_OPTIONS.map((option) => (
+      {HELP_OPTIONS.map((option, index) => (
         <ConfigureOptionCard
           key={option.id}
+          index={index + 1}
           title={option.title}
           description={option.description}
           icon={option.icon}
