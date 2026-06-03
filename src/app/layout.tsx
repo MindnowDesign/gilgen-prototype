@@ -23,6 +23,12 @@ export default function RootLayout({
       lang="en"
       className={`${workSans.variable} min-h-dvh font-sans antialiased`}
     >
+      <head>
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+        />
+      </head>
       <body className="flex min-h-dvh flex-col">{children}</body>
     </html>
   );
