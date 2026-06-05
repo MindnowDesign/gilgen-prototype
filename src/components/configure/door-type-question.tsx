@@ -1,5 +1,8 @@
+"use client";
+
 import { ConfigureOptionCard } from "@/components/configure/configure-option-card";
 import { ConfigureQuestionLayout } from "@/components/configure/configure-question-layout";
+import { useConfigureSelection } from "@/components/configure/use-configure-selection";
 
 const DOOR_TYPE_OPTIONS = [
   {
@@ -28,13 +31,17 @@ const DOOR_TYPE_OPTIONS = [
 ] as const;
 
 export function DoorTypeQuestion() {
+  const { isSelected, toggleSelect, navigation } =
+    useConfigureSelection(DOOR_TYPE_OPTIONS);
+
   return (
     <ConfigureQuestionLayout
       step={1}
       totalSteps={3}
       backHref="/"
       title="What are you working on?"
-      subtitle="Select the option that best matches your project. You can refine your choice in the next steps."
+      subtitle="Select the option that best matches your project."
+      navigation={navigation}
     >
       {DOOR_TYPE_OPTIONS.map((option, index) => (
         <ConfigureOptionCard
@@ -43,7 +50,8 @@ export function DoorTypeQuestion() {
           title={option.title}
           description={option.description}
           icon={option.icon}
-          href={option.href}
+          selected={isSelected(option.id)}
+          onSelect={() => toggleSelect(option.id)}
         />
       ))}
     </ConfigureQuestionLayout>

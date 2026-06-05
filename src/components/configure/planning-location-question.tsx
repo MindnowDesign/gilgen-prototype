@@ -1,5 +1,8 @@
+"use client";
+
 import { ConfigureOptionCard } from "@/components/configure/configure-option-card";
 import { ConfigureQuestionLayout } from "@/components/configure/configure-question-layout";
+import { useConfigureSelection } from "@/components/configure/use-configure-selection";
 
 const INSTALLATION_OPTIONS = [
   {
@@ -27,6 +30,10 @@ const INSTALLATION_OPTIONS = [
 ] as const;
 
 export function PlanningLocationQuestion() {
+  const { isSelected, toggleSelect, navigation } = useConfigureSelection(
+    INSTALLATION_OPTIONS
+  );
+
   return (
     <ConfigureQuestionLayout
       step={2}
@@ -34,6 +41,7 @@ export function PlanningLocationQuestion() {
       backHref="/configure"
       title="Where will the door be installed?"
       subtitle="Choose the environment that best describes your installation."
+      navigation={navigation}
     >
       {INSTALLATION_OPTIONS.map((option, index) => (
         <ConfigureOptionCard
@@ -42,7 +50,8 @@ export function PlanningLocationQuestion() {
           title={option.title}
           description={option.description}
           icon={option.icon}
-          href={option.href}
+          selected={isSelected(option.id)}
+          onSelect={() => toggleSelect(option.id)}
         />
       ))}
     </ConfigureQuestionLayout>

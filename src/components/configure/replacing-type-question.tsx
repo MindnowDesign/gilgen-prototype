@@ -1,5 +1,8 @@
+"use client";
+
 import { ConfigureOptionCard } from "@/components/configure/configure-option-card";
 import { ConfigureQuestionLayout } from "@/components/configure/configure-question-layout";
+import { useConfigureSelection } from "@/components/configure/use-configure-selection";
 
 const REPLACEMENT_TYPE_OPTIONS = [
   {
@@ -26,6 +29,10 @@ const REPLACEMENT_TYPE_OPTIONS = [
 ] as const;
 
 export function ReplacingTypeQuestion() {
+  const { isSelected, toggleSelect, navigation } = useConfigureSelection(
+    REPLACEMENT_TYPE_OPTIONS
+  );
+
   return (
     <ConfigureQuestionLayout
       step={2}
@@ -33,6 +40,7 @@ export function ReplacingTypeQuestion() {
       backHref="/configure"
       title="What are you replacing?"
       subtitle="Select the door type that matches your existing installation."
+      navigation={navigation}
     >
       {REPLACEMENT_TYPE_OPTIONS.map((option, index) => (
         <ConfigureOptionCard
@@ -41,7 +49,8 @@ export function ReplacingTypeQuestion() {
           title={option.title}
           description={option.description}
           icon={option.icon}
-          href={option.href}
+          selected={isSelected(option.id)}
+          onSelect={() => toggleSelect(option.id)}
         />
       ))}
     </ConfigureQuestionLayout>
