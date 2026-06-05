@@ -2,7 +2,14 @@
 
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import { useState } from "react";
 
+import {
+  CONFIGURATOR_COLOR_OPTIONS,
+  DEFAULT_CONFIGURATOR_COLOR_ID,
+  getConfiguratorColorHex,
+  type ConfiguratorColorId,
+} from "@/components/configurator/configurator-colors";
 import { MaterialIcon } from "@/components/icons/material-icon";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -26,11 +33,70 @@ const ACTION_BUTTONS = [
   { label: "Dimensions", icon: "straighten" },
 ] as const;
 
+const PANEL_CONTROL_BUTTON_CLASS =
+  "flex size-12 shrink-0 items-center justify-center rounded-[4px] border border-black-200 bg-white transition-colors hover:bg-black-50 md:size-14";
+
 type ConfiguratorProductPanelProps = {
   doorName: string;
   description?: string;
   backHref?: string;
 };
+
+function ConfiguratorColorSwatch({
+  label,
+  color,
+  custom = false,
+  ring = false,
+  selected = false,
+  onSelect,
+}: {
+  label: string;
+  color?: string;
+  custom?: boolean;
+  ring?: boolean;
+  selected?: boolean;
+  onSelect: () => void;
+}) {
+  return (
+    <div className="group relative shrink-0">
+      <button
+        type="button"
+        aria-label={label}
+        aria-pressed={selected}
+        onClick={onSelect}
+        className={cn(
+          PANEL_CONTROL_BUTTON_CLASS,
+          selected && "border-black-900 hover:bg-white"
+        )}
+      >
+        <span
+          className={cn(
+            "size-8 rounded-full md:size-9",
+            ring && "ring-1 ring-black-200 ring-inset"
+          )}
+          style={
+            custom
+              ? {
+                  background:
+                    "conic-gradient(from 0deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000)",
+                }
+              : { backgroundColor: color }
+          }
+        />
+      </button>
+      <span
+        role="tooltip"
+        className={cn(
+          "pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 -translate-x-1/2",
+          "rounded-[4px] bg-black-950 px-2.5 py-1.5 text-xs font-medium whitespace-nowrap text-white",
+          "opacity-0 transition-opacity group-hover:opacity-100"
+        )}
+      >
+        {label}
+      </span>
+    </div>
+  );
+}
 
 function ConfiguratorActionButton({
   label,
@@ -40,11 +106,11 @@ function ConfiguratorActionButton({
   icon: string;
 }) {
   return (
-    <div className="group relative">
+    <div className="group relative shrink-0">
       <button
         type="button"
         aria-label={label}
-        className="flex size-12 items-center justify-center rounded-[4px] border border-black-200 bg-white text-black-950 transition-colors hover:bg-black-50 md:size-14"
+        className={cn(PANEL_CONTROL_BUTTON_CLASS, "text-black-950")}
       >
         <MaterialIcon name={icon} size={24} weight={300} />
       </button>
@@ -53,7 +119,7 @@ function ConfiguratorActionButton({
         className={cn(
           "pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 -translate-x-1/2",
           "rounded-[4px] bg-black-950 px-2.5 py-1.5 text-xs font-medium whitespace-nowrap text-white",
-          "opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100"
+          "opacity-0 transition-opacity group-hover:opacity-100"
         )}
       >
         {label}
@@ -67,45 +133,63 @@ export function ConfiguratorProductPanel({
   description = "Placeholder",
   backHref = "/configure",
 }: ConfiguratorProductPanelProps) {
+  const [selectedColorId, setSelectedColorId] = useState<ConfiguratorColorId>(
+    DEFAULT_CONFIGURATOR_COLOR_ID
+  );
+  const frameColor = getConfiguratorColorHex(selectedColorId);
+
   return (
-    <div className="flex min-h-0 flex-1 flex-col">
-      <div className="px-2 pt-2 md:px-4 md:pt-4">
-        <Button
-          asChild
-          variant="ghost"
-          className="-ml-3 h-10 gap-1.5 px-3 text-sm font-medium text-black-600 hover:bg-black-50 hover:text-black-950"
-        >
-          <Link href={backHref}>
-            <MaterialIcon name="arrow_back" size={20} weight={300} />
-            Back
-          </Link>
-        </Button>
+    <div className="relative flex min-h-0 flex-1 flex-col overflow-visible">
+      <div className="relative z-10 px-2 pt-2 md:px-4">
+        <div className="mt-4 flex items-start gap-3">
+          <Button
+            asChild
+            variant="ghost"
+            size="icon"
+            className="shrink-0 text-black-600 hover:bg-black-50 hover:text-black-950"
+          >
+            <Link href={backHref} aria-label="Back">
+              <MaterialIcon name="arrow_back" size={20} weight={300} />
+            </Link>
+          </Button>
 
-        <h1 className="mt-4 text-[2rem] font-bold leading-tight tracking-tight">
-          {doorName}
-        </h1>
-        <p className="mt-3 max-w-md text-sm leading-relaxed text-black-500 md:text-base">
-          {description}
-        </p>
-      </div>
-
-      <div className="relative flex flex-1 items-center justify-center px-2 md:px-4">
-        <div className="flex h-full w-full max-w-3xl items-center justify-center">
-          <ConfiguratorDoorScene />
+          <div className="min-w-0">
+            <h1 className="text-[2rem] font-bold leading-tight tracking-tight">
+              {doorName}
+            </h1>
+            <p className="mt-3 max-w-md text-sm leading-relaxed text-black-500 md:text-base">
+              {description}
+            </p>
+          </div>
         </div>
       </div>
 
-      <div className="px-2 pb-2 md:px-4 md:pb-4">
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex gap-8 md:gap-12">
-            {["Spec 1", "Spec 2", "Spec 3"].map((label) => (
-              <div key={label} className="flex flex-col gap-1">
-                <span className="text-xs text-black-400">{label}</span>
-                <span className="text-lg font-semibold tracking-tight md:text-xl">
-                  —
-                </span>
-              </div>
-            ))}
+      <div className="relative z-0 flex min-h-[368px] flex-1 items-center justify-center overflow-visible px-2 md:px-4">
+        <div className="pointer-events-auto h-full w-full max-w-3xl overflow-visible">
+          <ConfiguratorDoorScene
+            frameColor={frameColor}
+            colorId={selectedColorId}
+          />
+        </div>
+      </div>
+
+      <div className="relative z-10 px-2 pb-2 md:px-4">
+        <div className="flex items-end justify-between gap-4">
+          <div>
+            <p className="text-sm font-semibold text-black-950">Colors</p>
+            <div className="mt-3 flex gap-2">
+              {CONFIGURATOR_COLOR_OPTIONS.map((option) => (
+                <ConfiguratorColorSwatch
+                  key={option.id}
+                  label={option.label}
+                  color={"color" in option ? option.color : undefined}
+                  custom={"custom" in option ? option.custom : false}
+                  ring={"ring" in option ? option.ring : false}
+                  selected={selectedColorId === option.id}
+                  onSelect={() => setSelectedColorId(option.id)}
+                />
+              ))}
+            </div>
           </div>
 
           <div className="flex shrink-0 gap-2">
@@ -117,16 +201,6 @@ export function ConfiguratorProductPanel({
               />
             ))}
           </div>
-        </div>
-
-        <div className="mt-6 flex gap-2">
-          {Array.from({ length: 5 }).map((_, index) => (
-            <div
-              key={index}
-              className="size-12 rounded-[4px] border border-black-200 bg-white md:size-14"
-              aria-hidden
-            />
-          ))}
         </div>
       </div>
     </div>

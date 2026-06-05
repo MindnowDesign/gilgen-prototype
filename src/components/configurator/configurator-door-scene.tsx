@@ -5,9 +5,18 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
+import type { ConfiguratorColorId } from "@/components/configurator/configurator-colors";
+import {
+  applyFrameColor,
+  prepareModelMaterials,
+} from "@/components/configurator/configurator-frame-materials";
+
 const MODEL_PATH = "/models/sliding-door.glb";
 const TARGET_HEIGHT = 2.53;
-const DISPLAY_SCALE = 0.98;
+const DISPLAY_SCALE = 0.98 * 0.8;
+const CANVAS_BLEED_SCALE = 1.4;
+const DEFAULT_CAMERA_DIRECTION = new THREE.Vector3(3.8, 2.4, 4.6).normalize();
+const DEFAULT_TARGET_LIFT = 0.06;
 
 function fitModelToScene(model: THREE.Object3D) {
   const box = new THREE.Box3().setFromObject(model);
@@ -32,9 +41,50 @@ function enableShadows(object: THREE.Object3D) {
   });
 }
 
-export function ConfiguratorDoorScene() {
+function getDefaultCameraTarget(model?: THREE.Object3D) {
+  const target = new THREE.Vector3(0, 1.05 * DISPLAY_SCALE, 0);
+
+  if (!model) return target;
+
+  const fittedBox = new THREE.Box3().setFromObject(model);
+  const center = fittedBox.getCenter(new THREE.Vector3());
+  const size = fittedBox.getSize(new THREE.Vector3());
+
+  target.copy(center);
+  target.y += size.y * DEFAULT_TARGET_LIFT;
+
+  return target;
+}
+
+function applyDefaultCameraView(
+  camera: THREE.PerspectiveCamera,
+  controls: OrbitControls,
+  target: THREE.Vector3
+) {
+  camera.position
+    .copy(target)
+    .add(DEFAULT_CAMERA_DIRECTION.clone().multiplyScalar(controls.maxDistance));
+  controls.target.copy(target);
+  controls.update();
+}
+
+type ConfiguratorDoorSceneProps = {
+  frameColor?: string;
+  colorId?: ConfiguratorColorId;
+};
+
+export function ConfiguratorDoorScene({
+  frameColor = "#C6C8CA",
+  colorId = "natural-aluminium",
+}: ConfiguratorDoorSceneProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const canvasHostRef = useRef<HTMLDivElement>(null);
+  const modelRef = useRef<THREE.Object3D | null>(null);
+  const frameColorRef = useRef(frameColor);
+  const colorIdRef = useRef(colorId);
+
+  frameColorRef.current = frameColor;
+  colorIdRef.current = colorId;
 
   useEffect(() => {
     const wrapper = wrapperRef.current;
@@ -44,13 +94,12 @@ export function ConfiguratorDoorScene() {
     let disposed = false;
     let frameId = 0;
 
-    const width = wrapper.clientWidth;
-    const height = wrapper.clientHeight;
+    const width = canvasHost.clientWidth;
+    const height = canvasHost.clientHeight;
 
     const scene = new THREE.Scene();
 
     const camera = new THREE.PerspectiveCamera(32, width / height, 0.1, 100);
-    camera.position.set(3.8, 2.4, 4.6);
 
     const renderer = new THREE.WebGLRenderer({
       antialias: true,
@@ -60,13 +109,17 @@ export function ConfiguratorDoorScene() {
     renderer.setSize(width, height);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.setClearColor(0x000000, 0);
     canvasHost.appendChild(renderer.domElement);
 
-    const ambient = new THREE.AmbientLight(0xffffff, 0.72);
+    const ambient = new THREE.AmbientLight(0xffffff, 0.88);
     scene.add(ambient);
 
-    const keyLight = new THREE.DirectionalLight(0xffffff, 1.15);
+    const hemisphere = new THREE.HemisphereLight(0xffffff, 0xb8bcc4, 0.42);
+    scene.add(hemisphere);
+
+    const keyLight = new THREE.DirectionalLight(0xffffff, 0.95);
     keyLight.position.set(4, 6, 5);
     keyLight.castShadow = true;
     keyLight.shadow.mapSize.set(1024, 1024);
@@ -79,7 +132,7 @@ export function ConfiguratorDoorScene() {
     keyLight.shadow.bias = -0.0008;
     scene.add(keyLight);
 
-    const fillLight = new THREE.DirectionalLight(0xf4f6f8, 0.45);
+    const fillLight = new THREE.DirectionalLight(0xf4f6f8, 0.55);
     fillLight.position.set(-3, 2, -2);
     scene.add(fillLight);
 
@@ -91,11 +144,7 @@ export function ConfiguratorDoorScene() {
     ground.receiveShadow = true;
     scene.add(ground);
 
-    const lookAtTarget = new THREE.Vector3(0, 1.05 * DISPLAY_SCALE, 0);
-    camera.lookAt(lookAtTarget);
-
     const controls = new OrbitControls(camera, renderer.domElement);
-    controls.target.copy(lookAtTarget);
     controls.enableDamping = true;
     controls.dampingFactor = 0.08;
     controls.enablePan = false;
@@ -103,7 +152,7 @@ export function ConfiguratorDoorScene() {
     controls.maxDistance = 8.5;
     controls.minPolarAngle = Math.PI * 0.15;
     controls.maxPolarAngle = Math.PI * 0.48;
-    controls.update();
+    applyDefaultCameraView(camera, controls, getDefaultCameraTarget());
 
     const loader = new GLTFLoader();
     loader.load(
@@ -114,12 +163,12 @@ export function ConfiguratorDoorScene() {
         const model = gltf.scene;
         fitModelToScene(model);
         enableShadows(model);
+        prepareModelMaterials(model);
+        applyFrameColor(model, frameColorRef.current, colorIdRef.current);
+        modelRef.current = model;
         scene.add(model);
 
-        const fittedBox = new THREE.Box3().setFromObject(model);
-        lookAtTarget.y = fittedBox.getCenter(new THREE.Vector3()).y;
-        controls.target.copy(lookAtTarget);
-        controls.update();
+        applyDefaultCameraView(camera, controls, getDefaultCameraTarget(model));
       },
       undefined,
       (error) => {
@@ -135,8 +184,8 @@ export function ConfiguratorDoorScene() {
     render();
 
     const handleResize = () => {
-      const nextWidth = wrapper.clientWidth;
-      const nextHeight = wrapper.clientHeight;
+      const nextWidth = canvasHost.clientWidth;
+      const nextHeight = canvasHost.clientHeight;
       if (nextWidth === 0 || nextHeight === 0) return;
       camera.aspect = nextWidth / nextHeight;
       camera.updateProjectionMatrix();
@@ -144,7 +193,7 @@ export function ConfiguratorDoorScene() {
     };
 
     const observer = new ResizeObserver(handleResize);
-    observer.observe(wrapper);
+    observer.observe(canvasHost);
 
     return () => {
       disposed = true;
@@ -165,12 +214,24 @@ export function ConfiguratorDoorScene() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!modelRef.current) return;
+    applyFrameColor(modelRef.current, frameColor, colorId);
+  }, [frameColor, colorId]);
+
   return (
     <div
       ref={wrapperRef}
-      className="relative h-full max-h-[min(70vh,644px)] min-h-[368px] w-full cursor-grab active:cursor-grabbing"
+      className="relative h-full max-h-[min(70vh,644px)] min-h-[368px] w-full overflow-visible"
     >
-      <div ref={canvasHostRef} className="absolute inset-0" />
+      <div
+        ref={canvasHostRef}
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing"
+        style={{
+          width: `${CANVAS_BLEED_SCALE * 100}%`,
+          height: `${CANVAS_BLEED_SCALE * 100}%`,
+        }}
+      />
     </div>
   );
 }

@@ -8,7 +8,7 @@ export function ConfiguratorLayout({ children }: ConfiguratorLayoutProps) {
   return (
     <div className="min-h-dvh bg-surface text-black-950">
       <div className="grid min-h-dvh grid-rows-[auto_1fr]">
-        <header className="flex items-center px-8 py-6 md:px-12">
+        <header className="relative z-10 flex items-center px-8 py-6 md:px-12">
           <GilgenLogo />
         </header>
 
