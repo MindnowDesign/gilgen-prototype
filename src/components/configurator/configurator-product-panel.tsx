@@ -1,8 +1,24 @@
+"use client";
+
 import Link from "next/link";
+import dynamic from "next/dynamic";
 
 import { MaterialIcon } from "@/components/icons/material-icon";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+
+const ConfiguratorDoorScene = dynamic(
+  () =>
+    import("@/components/configurator/configurator-door-scene").then(
+      (mod) => mod.ConfiguratorDoorScene
+    ),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-full min-h-[368px] w-full max-w-2xl animate-pulse rounded-[4px] bg-black-100/40" />
+    ),
+  }
+);
 
 const ACTION_BUTTONS = [
   { label: "Full screen", icon: "open_in_full" },
@@ -30,7 +46,7 @@ function ConfiguratorActionButton({
         aria-label={label}
         className="flex size-12 items-center justify-center rounded-[4px] border border-black-200 bg-white text-black-950 transition-colors hover:bg-black-50 md:size-14"
       >
-        <MaterialIcon name={icon} size={24} />
+        <MaterialIcon name={icon} size={24} weight={300} />
       </button>
       <span
         role="tooltip"
@@ -60,7 +76,7 @@ export function ConfiguratorProductPanel({
           className="-ml-3 h-10 gap-1.5 px-3 text-sm font-medium text-black-600 hover:bg-black-50 hover:text-black-950"
         >
           <Link href={backHref}>
-            <MaterialIcon name="arrow_back" size={20} />
+            <MaterialIcon name="arrow_back" size={20} weight={300} />
             Back
           </Link>
         </Button>
@@ -73,7 +89,11 @@ export function ConfiguratorProductPanel({
         </p>
       </div>
 
-      <div className="flex flex-1 items-center justify-center px-2 md:px-4" />
+      <div className="relative flex flex-1 items-center justify-center px-2 md:px-4">
+        <div className="flex h-full w-full max-w-3xl items-center justify-center">
+          <ConfiguratorDoorScene />
+        </div>
+      </div>
 
       <div className="px-2 pb-2 md:px-4 md:pb-4">
         <div className="flex items-start justify-between gap-4">
