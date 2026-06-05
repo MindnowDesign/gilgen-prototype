@@ -10,6 +10,8 @@ const buttonVariants = cva(
     "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
     "[&_svg:last-child]:transition-transform [&_svg:last-child]:group-hover/button:translate-x-0.5",
     "[&_.material-icons-outlined:last-child]:transition-transform [&_.material-icons-outlined:last-child]:group-hover/button:translate-x-0.5",
+    "[&_.material-symbols-outlined:last-child]:transition-transform [&_.material-symbols-outlined:last-child]:group-hover/button:translate-x-0.5",
+    "[&_.material-symbols-outlined:first-child]:transition-transform [&_.material-symbols-outlined:first-child]:group-hover/button:-translate-x-0.5",
     "[&_[data-button-icon=end]]:transition-transform [&_[data-button-icon=end]]:group-hover/button:translate-x-0.5",
     "[&_[data-button-icon=start]]:transition-transform [&_[data-button-icon=start]]:group-hover/button:-translate-x-0.5",
   ].join(" "),

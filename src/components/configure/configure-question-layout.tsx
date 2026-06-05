@@ -60,7 +60,7 @@ export function ConfigureQuestionLayout({
               className="border-black-700 bg-transparent font-bold tracking-wide text-black-700 uppercase hover:bg-black-50 hover:text-black-700 focus-visible:ring-black-700/40"
             >
               <Link href={backHref}>
-                <MaterialIcon name="arrow_back" size={20} />
+                <MaterialIcon name="arrow_back" size={20} weight={300} />
                 Back
               </Link>
             </Button>
@@ -68,13 +68,13 @@ export function ConfigureQuestionLayout({
             {navigation.nextDisabled || !navigation.nextHref ? (
               <Button variant="cta" size="lg" disabled>
                 Next
-                <MaterialIcon name="arrow_forward" size={20} />
+                <MaterialIcon name="arrow_forward" size={20} weight={300} />
               </Button>
             ) : (
               <Button asChild variant="cta" size="lg">
                 <Link href={navigation.nextHref}>
                   Next
-                  <MaterialIcon name="arrow_forward" size={20} />
+                  <MaterialIcon name="arrow_forward" size={20} weight={300} />
                 </Link>
               </Button>
             )}

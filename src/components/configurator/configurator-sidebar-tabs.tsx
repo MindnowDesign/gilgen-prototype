@@ -2,9 +2,13 @@
 
 import { useState } from "react";
 
+import { ConfiguratorColorsSection } from "@/components/configurator/configurator-colors-section";
+import { type ConfiguratorColorId } from "@/components/configurator/configurator-colors";
 import { ConfiguratorDoorConfiguration } from "@/components/configurator/configurator-door-configuration";
+import { ConfiguratorGlassType } from "@/components/configurator/configurator-glass-type";
 import { ConfiguratorProfileStyle } from "@/components/configurator/configurator-profile-style";
 import { MaterialIcon } from "@/components/icons/material-icon";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const SIDEBAR_TABS = [
@@ -63,7 +67,15 @@ function FolderTab({
   );
 }
 
-function ConfiguratorSidebarTabPanel({ activeTab }: { activeTab: SidebarTabId }) {
+function ConfiguratorSidebarTabPanel({
+  activeTab,
+  selectedColorId,
+  onColorChange,
+}: {
+  activeTab: SidebarTabId;
+  selectedColorId: ConfiguratorColorId;
+  onColorChange: (colorId: ConfiguratorColorId) => void;
+}) {
   return (
     <div
       role="tabpanel"
@@ -74,6 +86,11 @@ function ConfiguratorSidebarTabPanel({ activeTab }: { activeTab: SidebarTabId })
         <>
           <ConfiguratorDoorConfiguration />
           <ConfiguratorProfileStyle />
+          <ConfiguratorGlassType />
+          <ConfiguratorColorsSection
+            selectedColorId={selectedColorId}
+            onColorChange={onColorChange}
+          />
         </>
       ) : null}
 
@@ -92,8 +109,17 @@ function ConfiguratorSidebarTabPanel({ activeTab }: { activeTab: SidebarTabId })
   );
 }
 
-export function ConfiguratorSidebar() {
+export function ConfiguratorSidebar({
+  selectedColorId,
+  onColorChange,
+}: {
+  selectedColorId: ConfiguratorColorId;
+  onColorChange: (colorId: ConfiguratorColorId) => void;
+}) {
   const [activeTab, setActiveTab] = useState<SidebarTabId>("design");
+  const activeTabIndex = SIDEBAR_TABS.findIndex((tab) => tab.id === activeTab);
+  const currentTab = SIDEBAR_TABS[activeTabIndex];
+  const nextTab = SIDEBAR_TABS[activeTabIndex + 1];
 
   return (
     <div className="relative z-10 flex w-full shrink-0 flex-col lg:w-[380px] xl:w-[420px]">
@@ -115,14 +141,35 @@ export function ConfiguratorSidebar() {
       </div>
 
       <aside className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-b-[4px] bg-white">
-        <div className="flex flex-1 flex-col overflow-y-auto p-6 md:p-8">
-          <h2 className="text-xl font-bold tracking-tight">Build your door</h2>
-          <ConfiguratorSidebarTabPanel activeTab={activeTab} />
+        <div className="min-h-0 flex-1 overflow-y-auto p-6 md:p-8">
+          <h2 className="text-xl font-bold tracking-tight">{currentTab.label}</h2>
+          <ConfiguratorSidebarTabPanel
+            activeTab={activeTab}
+            selectedColorId={selectedColorId}
+            onColorChange={onColorChange}
+          />
         </div>
 
-        <div className="mx-4 mb-4 rounded-[4px] bg-black-950 p-5 md:mx-6 md:mb-6">
-          <p className="text-2xl font-bold tracking-tight text-white">—</p>
-          <p className="mt-1 text-xs text-black-400">Total price</p>
+        <div className="shrink-0 space-y-4 border-t border-black-100 p-6 md:p-8 pt-4">
+          <div className="rounded-[4px] bg-black-950 p-5">
+            <p className="text-2xl font-bold tracking-tight text-white">
+              CHF 10&apos;000
+            </p>
+            <p className="mt-1 text-xs text-black-400">Total price</p>
+          </div>
+
+          <Button
+            type="button"
+            variant="cta"
+            className="w-full"
+            disabled={!nextTab}
+            onClick={() => {
+              if (nextTab) setActiveTab(nextTab.id);
+            }}
+          >
+            Next
+            <MaterialIcon name="arrow_forward" size={20} weight={300} />
+          </Button>
         </div>
       </aside>
     </div>

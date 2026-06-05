@@ -1,6 +1,5 @@
 import { ConfiguratorLayout } from "@/components/configurator/configurator-layout";
-import { ConfiguratorProductPanel } from "@/components/configurator/configurator-product-panel";
-import { ConfiguratorSidebar } from "@/components/configurator/configurator-sidebar";
+import { ConfiguratorWorkspace } from "@/components/configurator/configurator-workspace";
 
 type ConfiguratorScreenProps = {
   doorName?: string;
@@ -9,20 +8,17 @@ type ConfiguratorScreenProps = {
 };
 
 export function ConfiguratorScreen({
-  doorName = "Sliding Door System",
-  description = "Placeholder",
+  doorName,
+  description,
   backHref,
 }: ConfiguratorScreenProps) {
   return (
     <ConfiguratorLayout>
-      <div className="flex min-h-0 flex-1 flex-col gap-4 lg:h-[calc(100dvh-5.5rem)] lg:flex-row lg:gap-6">
-        <ConfiguratorProductPanel
-          doorName={doorName}
-          description={description}
-          backHref={backHref}
-        />
-        <ConfiguratorSidebar />
-      </div>
+      <ConfiguratorWorkspace
+        doorName={doorName}
+        description={description}
+        backHref={backHref}
+      />
     </ConfiguratorLayout>
   );
 }

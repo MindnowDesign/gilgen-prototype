@@ -2,11 +2,8 @@
 
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { useState } from "react";
 
 import {
-  CONFIGURATOR_COLOR_OPTIONS,
-  DEFAULT_CONFIGURATOR_COLOR_ID,
   getConfiguratorColorHex,
   type ConfiguratorColorId,
 } from "@/components/configurator/configurator-colors";
@@ -40,63 +37,8 @@ type ConfiguratorProductPanelProps = {
   doorName: string;
   description?: string;
   backHref?: string;
+  selectedColorId: ConfiguratorColorId;
 };
-
-function ConfiguratorColorSwatch({
-  label,
-  color,
-  custom = false,
-  ring = false,
-  selected = false,
-  onSelect,
-}: {
-  label: string;
-  color?: string;
-  custom?: boolean;
-  ring?: boolean;
-  selected?: boolean;
-  onSelect: () => void;
-}) {
-  return (
-    <div className="group relative shrink-0">
-      <button
-        type="button"
-        aria-label={label}
-        aria-pressed={selected}
-        onClick={onSelect}
-        className={cn(
-          PANEL_CONTROL_BUTTON_CLASS,
-          selected && "border-black-900 hover:bg-white"
-        )}
-      >
-        <span
-          className={cn(
-            "size-8 rounded-full md:size-9",
-            ring && "ring-1 ring-black-200 ring-inset"
-          )}
-          style={
-            custom
-              ? {
-                  background:
-                    "conic-gradient(from 0deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000)",
-                }
-              : { backgroundColor: color }
-          }
-        />
-      </button>
-      <span
-        role="tooltip"
-        className={cn(
-          "pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 -translate-x-1/2",
-          "rounded-[4px] bg-black-950 px-2.5 py-1.5 text-xs font-medium whitespace-nowrap text-white",
-          "opacity-0 transition-opacity group-hover:opacity-100"
-        )}
-      >
-        {label}
-      </span>
-    </div>
-  );
-}
 
 function ConfiguratorActionButton({
   label,
@@ -132,10 +74,8 @@ export function ConfiguratorProductPanel({
   doorName,
   description = "Placeholder",
   backHref = "/configure",
+  selectedColorId,
 }: ConfiguratorProductPanelProps) {
-  const [selectedColorId, setSelectedColorId] = useState<ConfiguratorColorId>(
-    DEFAULT_CONFIGURATOR_COLOR_ID
-  );
   const frameColor = getConfiguratorColorHex(selectedColorId);
 
   return (
@@ -174,24 +114,7 @@ export function ConfiguratorProductPanel({
       </div>
 
       <div className="relative z-10 px-2 pb-2 md:px-4">
-        <div className="flex items-end justify-between gap-4">
-          <div>
-            <p className="text-sm font-semibold text-black-950">Colors</p>
-            <div className="mt-3 flex gap-2">
-              {CONFIGURATOR_COLOR_OPTIONS.map((option) => (
-                <ConfiguratorColorSwatch
-                  key={option.id}
-                  label={option.label}
-                  color={"color" in option ? option.color : undefined}
-                  custom={"custom" in option ? option.custom : false}
-                  ring={"ring" in option ? option.ring : false}
-                  selected={selectedColorId === option.id}
-                  onSelect={() => setSelectedColorId(option.id)}
-                />
-              ))}
-            </div>
-          </div>
-
+        <div className="flex items-end justify-end gap-4">
           <div className="flex shrink-0 gap-2">
             {ACTION_BUTTONS.map((action) => (
               <ConfiguratorActionButton

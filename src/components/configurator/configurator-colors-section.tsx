@@ -1,0 +1,103 @@
+"use client";
+
+import {
+  CONFIGURATOR_COLOR_OPTIONS,
+  type ConfiguratorColorId,
+} from "@/components/configurator/configurator-colors";
+import { cn } from "@/lib/utils";
+
+const COLOR_BUTTON_CLASS =
+  "flex aspect-square w-full items-center justify-center rounded-[4px] border border-black-200 bg-white transition-colors hover:bg-black-50";
+
+type ConfiguratorColorSwatchProps = {
+  label: string;
+  color?: string;
+  custom?: boolean;
+  ring?: boolean;
+  selected?: boolean;
+  onSelect: () => void;
+};
+
+function ConfiguratorColorSwatch({
+  label,
+  color,
+  custom = false,
+  ring = false,
+  selected = false,
+  onSelect,
+}: ConfiguratorColorSwatchProps) {
+  return (
+    <div className="group relative w-full">
+      <button
+        type="button"
+        aria-label={label}
+        aria-pressed={selected}
+        onClick={onSelect}
+        className={cn(
+          COLOR_BUTTON_CLASS,
+          selected && "border-black-900 hover:bg-white"
+        )}
+      >
+        <span
+          className={cn(
+            "aspect-square w-[64%] rounded-full",
+            ring && "ring-1 ring-black-200 ring-inset"
+          )}
+          style={
+            custom
+              ? {
+                  background:
+                    "conic-gradient(from 0deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000)",
+                }
+              : { backgroundColor: color }
+          }
+        />
+      </button>
+      <span
+        role="tooltip"
+        className={cn(
+          "pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 -translate-x-1/2",
+          "rounded-[4px] bg-black-950 px-2.5 py-1.5 text-xs font-medium whitespace-nowrap text-white",
+          "opacity-0 transition-opacity group-hover:opacity-100"
+        )}
+      >
+        {label}
+      </span>
+    </div>
+  );
+}
+
+type ConfiguratorColorsSectionProps = {
+  selectedColorId: ConfiguratorColorId;
+  onColorChange: (colorId: ConfiguratorColorId) => void;
+};
+
+export function ConfiguratorColorsSection({
+  selectedColorId,
+  onColorChange,
+}: ConfiguratorColorsSectionProps) {
+  return (
+    <section className="mt-8" aria-labelledby="configurator-colors-label">
+      <h3
+        id="configurator-colors-label"
+        className="text-sm font-semibold text-black-950"
+      >
+        Colors
+      </h3>
+
+      <div className="mt-3 grid w-full grid-cols-5 gap-2">
+        {CONFIGURATOR_COLOR_OPTIONS.map((option) => (
+          <ConfiguratorColorSwatch
+            key={option.id}
+            label={option.label}
+            color={"color" in option ? option.color : undefined}
+            custom={"custom" in option ? option.custom : false}
+            ring={"ring" in option ? option.ring : false}
+            selected={selectedColorId === option.id}
+            onSelect={() => onColorChange(option.id)}
+          />
+        ))}
+      </div>
+    </section>
+  );
+}

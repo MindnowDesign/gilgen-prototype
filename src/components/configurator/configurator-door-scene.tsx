@@ -10,6 +10,7 @@ import {
   applyFrameColor,
   prepareModelMaterials,
 } from "@/components/configurator/configurator-frame-materials";
+import { createConfiguratorSceneGrid } from "@/components/configurator/configurator-scene-grid";
 
 const MODEL_PATH = "/models/sliding-door.glb";
 const TARGET_HEIGHT = 2.53;
@@ -144,6 +145,8 @@ export function ConfiguratorDoorScene({
     ground.receiveShadow = true;
     scene.add(ground);
 
+    scene.add(createConfiguratorSceneGrid());
+
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.08;
@@ -203,7 +206,10 @@ export function ConfiguratorDoorScene({
       canvasHost.removeChild(renderer.domElement);
       renderer.dispose();
       scene.traverse((object) => {
-        if (object instanceof THREE.Mesh) {
+        if (
+          object instanceof THREE.Mesh ||
+          object instanceof THREE.LineSegments
+        ) {
           object.geometry.dispose();
           const materials = Array.isArray(object.material)
             ? object.material

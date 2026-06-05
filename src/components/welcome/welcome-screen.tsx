@@ -13,76 +13,105 @@ const STEPS = [
   { number: "03", label: "Dimensions" },
 ] as const;
 
+const HERO_TITLE = "Welcome to Gilgen Configurator";
+
+const HERO_DESCRIPTION = (
+  <>
+    Before we start, please answer these{" "}
+    <span className="font-semibold">3 questions</span> to design the best
+    experience and solution for you and your needs.
+  </>
+);
+
+const heroTitleClassName =
+  "text-4xl font-bold tracking-tight text-white md:text-5xl lg:text-[3.25rem] lg:leading-tight";
+
+const heroDescriptionClassName =
+  "mt-8 max-w-xl text-base leading-relaxed text-white md:text-lg";
+
+const heroSectionClassName =
+  "flex w-full max-w-3xl flex-col items-center text-center pt-[min(22vh,11rem)]";
+
 export function WelcomeScreen() {
   return (
     <div className="relative min-h-dvh">
-      <WelcomeBackground />
+      <WelcomeBackground
+        heroOverlay={
+          <div className="grid min-h-dvh grid-rows-[auto_1fr_auto]">
+            <header className="invisible flex items-center px-8 py-6">
+              <GilgenLogo variant="dark" />
+            </header>
+
+            <main className="flex flex-col items-center px-8 md:px-12">
+              <div className={heroSectionClassName}>
+                <h1 className={heroTitleClassName}>{HERO_TITLE}</h1>
+                <p className={heroDescriptionClassName}>{HERO_DESCRIPTION}</p>
+              </div>
+            </main>
+          </div>
+        }
+      />
 
       <div className="relative z-10 grid min-h-dvh grid-rows-[auto_1fr_auto] text-white">
-      <header className="flex items-center px-8 py-6">
-        <GilgenLogo variant="dark" />
-      </header>
+        <header className="flex items-center px-8 py-6">
+          <GilgenLogo variant="dark" />
+        </header>
 
-      <main className="flex flex-col items-center justify-center px-8 md:px-12">
-        <div className="flex w-full max-w-3xl flex-col items-center text-center">
-          <h1 className="text-4xl font-bold tracking-tight text-black-50 md:text-5xl lg:text-[3.25rem] lg:leading-tight">
-            Welcome to Gilgen Configurator
-          </h1>
+        <main className="flex flex-col items-center px-8 md:px-12">
+          <div className={heroSectionClassName}>
+            <div className="invisible" aria-hidden>
+              <h1 className={heroTitleClassName}>{HERO_TITLE}</h1>
+              <p className={heroDescriptionClassName}>{HERO_DESCRIPTION}</p>
+            </div>
 
-          <p className="mt-8 max-w-xl text-base leading-relaxed text-black-200 md:text-lg">
-            Before we start, please answer these{" "}
-            <span className="font-semibold text-white">3 questions</span> to
-            design the best experience and solution for you and your needs.
-          </p>
+            <ol className="mt-12 flex w-fit flex-col items-start gap-4">
+              {STEPS.map((step) => (
+                <li key={step.number} className="flex items-center gap-3">
+                  <span
+                    className={cn(
+                      "flex size-9 items-center justify-center border text-xs font-semibold",
+                      "border-white/20 bg-white/10 text-white"
+                    )}
+                  >
+                    {step.number}
+                  </span>
+                  <span className="text-sm font-medium text-black-200">
+                    {step.label}
+                  </span>
+                </li>
+              ))}
+            </ol>
 
-          <ol className="mt-12 flex w-fit flex-col items-start gap-4">
-            {STEPS.map((step) => (
-              <li key={step.number} className="flex items-center gap-3">
-                <span
-                  className={cn(
-                    "flex size-9 items-center justify-center border text-xs font-semibold",
-                    "border-white/20 bg-white/10 text-white"
-                  )}
-                >
-                  {step.number}
-                </span>
-                <span className="text-sm font-medium text-black-200">
-                  {step.label}
-                </span>
-              </li>
-            ))}
-          </ol>
+            <Button asChild variant="cta" className="mt-14">
+              <Link href="/configure">
+                Start
+                <MaterialIcon name="arrow_forward" size={20} weight={300} />
+              </Link>
+            </Button>
+          </div>
+        </main>
 
-          <Button asChild variant="cta" className="mt-14">
-            <Link href="/configure">
-              Start
-              <MaterialIcon name="arrow_forward" size={20} />
-            </Link>
-          </Button>
-        </div>
-      </main>
-
-      <footer className="flex flex-col gap-4 px-8 py-8 text-xs text-black-400 sm:flex-row sm:items-center sm:justify-between md:px-12">
-        <p>© 2026 Gilgen Door Systems. All rights reserved.</p>
-        <div className="flex flex-col gap-2 sm:items-end">
-          <p>
-            Need help?{" "}
-            <Link
-              href="#"
-              className="font-semibold text-white underline-offset-2 hover:underline"
+        <footer className="flex flex-col gap-4 px-8 py-8 text-xs text-black-400 sm:flex-row sm:items-center sm:justify-between md:px-12">
+          <p>© 2026 Gilgen Door Systems. All rights reserved.</p>
+          <div className="flex flex-col gap-2 sm:items-end">
+            <p>
+              Need help?{" "}
+              <Link
+                href="#"
+                className="font-semibold text-white underline-offset-2 hover:underline"
+              >
+                Contact us
+              </Link>
+            </p>
+            <Button
+              asChild
+              variant="link"
+              className="h-auto p-0 text-xs text-black-300 hover:text-white"
             >
-              Contact us
-            </Link>
-          </p>
-          <Button
-            asChild
-            variant="link"
-            className="h-auto p-0 text-xs text-black-300 hover:text-white"
-          >
-            <Link href="/configurator">Go to configurator</Link>
-          </Button>
-        </div>
-      </footer>
+              <Link href="/configurator">Go to configurator</Link>
+            </Button>
+          </div>
+        </footer>
       </div>
     </div>
   );
