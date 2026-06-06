@@ -43,10 +43,10 @@ function FolderTab({
       aria-controls={`configurator-tabpanel-${tab.id}`}
       onClick={onSelect}
       className={cn(
-        "relative m-0 flex w-[120px] shrink-0 items-center justify-center gap-1.5 rounded-t-[4px] border-0 px-3 py-2.5 text-xs font-medium transition-colors",
+        "relative m-0 flex w-[120px] shrink-0 items-center justify-center gap-1.5 rounded-t-[4px] border-0 px-3 py-2.5 text-xs transition-colors",
         selected
-          ? "z-10 -mb-px bg-white pb-[calc(0.625rem+1px)] text-black-950"
-          : "bg-black-100 text-black-500 hover:text-black-800"
+          ? "z-10 -mb-px bg-white pb-[calc(0.625rem+1px)] font-semibold text-black-950"
+          : "bg-black-100 font-normal text-black-500 hover:text-black-800"
       )}
     >
       {selected && !isFirst ? (
@@ -81,6 +81,7 @@ function ConfiguratorSidebarTabPanel({
       role="tabpanel"
       id={`configurator-tabpanel-${activeTab}`}
       aria-labelledby={`configurator-tab-${activeTab}`}
+      className="[&>section:first-child]:mt-0"
     >
       {activeTab === "design" ? (
         <>
@@ -118,31 +119,31 @@ export function ConfiguratorSidebar({
 }) {
   const [activeTab, setActiveTab] = useState<SidebarTabId>("design");
   const activeTabIndex = SIDEBAR_TABS.findIndex((tab) => tab.id === activeTab);
-  const currentTab = SIDEBAR_TABS[activeTabIndex];
   const nextTab = SIDEBAR_TABS[activeTabIndex + 1];
 
   return (
-    <div className="relative z-10 flex w-full shrink-0 flex-col lg:w-[380px] xl:w-[420px]">
-      <div
-        role="tablist"
-        aria-label="Door configuration sections"
-        className="flex items-end gap-2 bg-surface"
-      >
-        {SIDEBAR_TABS.map((tab, index) => (
-          <FolderTab
-            key={tab.id}
-            tab={tab}
-            selected={activeTab === tab.id}
-            isFirst={index === 0}
-            isLast={index === SIDEBAR_TABS.length - 1}
-            onSelect={() => setActiveTab(tab.id)}
-          />
-        ))}
+    <div className="relative flex h-full w-full min-h-0 flex-col">
+      <div className="pt-2">
+        <div
+          role="tablist"
+          aria-label="Door configuration sections"
+          className="mt-4 flex items-start gap-2 bg-surface"
+        >
+          {SIDEBAR_TABS.map((tab, index) => (
+            <FolderTab
+              key={tab.id}
+              tab={tab}
+              selected={activeTab === tab.id}
+              isFirst={index === 0}
+              isLast={index === SIDEBAR_TABS.length - 1}
+              onSelect={() => setActiveTab(tab.id)}
+            />
+          ))}
+        </div>
       </div>
 
       <aside className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-b-[4px] bg-white">
         <div className="min-h-0 flex-1 overflow-y-auto p-6 md:p-8">
-          <h2 className="text-xl font-bold tracking-tight">{currentTab.label}</h2>
           <ConfiguratorSidebarTabPanel
             activeTab={activeTab}
             selectedColorId={selectedColorId}
@@ -150,7 +151,7 @@ export function ConfiguratorSidebar({
           />
         </div>
 
-        <div className="shrink-0 space-y-4 border-t border-black-100 p-6 md:p-8 pt-4">
+        <div className="shrink-0 space-y-4 border-t border-black-100/80 px-6 py-6 md:px-8 md:py-6">
           <div className="rounded-[4px] bg-black-950 p-5">
             <p className="text-2xl font-bold tracking-tight text-white">
               CHF 10&apos;000

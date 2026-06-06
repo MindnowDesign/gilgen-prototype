@@ -7,7 +7,7 @@ import {
 import { cn } from "@/lib/utils";
 
 const COLOR_BUTTON_CLASS =
-  "flex aspect-square w-full items-center justify-center rounded-[4px] border border-black-200 bg-white transition-colors hover:bg-black-50";
+  "flex aspect-square w-full items-center justify-center rounded-[4px] border border-black-100/80 bg-white transition-colors hover:border-yellow-300 hover:bg-yellow-300";
 
 type ConfiguratorColorSwatchProps = {
   label: string;
@@ -35,13 +35,15 @@ function ConfiguratorColorSwatch({
         onClick={onSelect}
         className={cn(
           COLOR_BUTTON_CLASS,
-          selected && "border-black-900 hover:bg-white"
+          selected &&
+            "border-black-900 bg-black-900 hover:border-black-900 hover:bg-black-900"
         )}
       >
         <span
           className={cn(
             "aspect-square w-[64%] rounded-full",
-            ring && "ring-1 ring-black-200 ring-inset"
+            ring && "ring-1 ring-black-200 ring-inset",
+            selected && "border-[1.5px] border-black-50"
           )}
           style={
             custom

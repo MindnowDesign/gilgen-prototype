@@ -51,7 +51,7 @@ export function ConfiguratorOptionSection({
                   : "h-14",
                 selected
                   ? "border-black-900 bg-black-900 text-white"
-                  : "border-black-100 bg-transparent text-black-950 hover:border-yellow-400 hover:bg-yellow-400"
+                  : "border-black-100/80 bg-transparent text-black-950 hover:border-yellow-300 hover:bg-yellow-300"
               )}
             >
               {showImages && option.imageSrc ? (
