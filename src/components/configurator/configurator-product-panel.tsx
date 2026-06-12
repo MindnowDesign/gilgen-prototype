@@ -9,6 +9,7 @@ import {
   type ConfiguratorColorId,
 } from "@/components/configurator/configurator-colors";
 import { MaterialIcon } from "@/components/icons/material-icon";
+import { useLanguage } from "@/i18n/language-provider";
 import { cn } from "@/lib/utils";
 
 const ConfiguratorDoorScene = dynamic(
@@ -23,11 +24,6 @@ const ConfiguratorDoorScene = dynamic(
     ),
   }
 );
-
-const ACTION_BUTTONS = [
-  { label: "Change background", icon: "image" },
-  { label: "Dimensions", icon: "straighten" },
-] as const;
 
 const PANEL_CONTROL_BUTTON_CLASS =
   "flex size-12 shrink-0 items-center justify-center rounded-[4px] border border-black-100/80 bg-white transition-colors hover:bg-black-50 md:size-14";
@@ -147,14 +143,20 @@ function ConfiguratorActionButton({
 
 export function ConfiguratorProductPanel({
   doorName,
-  description = "Commercial Application · High Traffic",
+  description,
   backHref = "/configure",
   selectedColorId,
   sidebarOpen,
   onSidebarOpenChange,
 }: ConfiguratorProductPanelProps) {
+  const { t } = useLanguage();
   const frameColor = getConfiguratorColorHex(selectedColorId);
   const [viewExpanded, setViewExpanded] = useState(false);
+
+  const actionButtons = [
+    { label: t.configurator.changeBackground, icon: "image" },
+    { label: t.configurator.dimensions, icon: "straighten" },
+  ] as const;
 
   useEffect(() => {
     if (sidebarOpen) {
@@ -175,7 +177,7 @@ export function ConfiguratorProductPanel({
         <div className="mt-4 flex items-start gap-3">
           <Link
             href={backHref}
-            aria-label="Back"
+            aria-label={t.common.back}
             className="flex size-10 shrink-0 items-center justify-center rounded-[4px] bg-transparent text-black-950 transition-colors hover:bg-black-100/60"
           >
             <MaterialIcon name="arrow_back" size={24} weight={300} />
@@ -186,7 +188,7 @@ export function ConfiguratorProductPanel({
               {doorName}
             </h1>
             <p className="mt-3 max-w-md text-sm leading-relaxed text-black-500 md:text-base">
-              <ConfiguratorDescription text={description} />
+              <ConfiguratorDescription text={description ?? t.configurator.description} />
             </p>
           </div>
         </div>
@@ -219,15 +221,15 @@ export function ConfiguratorProductPanel({
 
       <div className="relative z-10 px-2 md:px-4 lg:col-start-1 lg:row-start-3 lg:w-full lg:self-end">
         <div className="flex items-end justify-between gap-4">
-          <ConfiguratorDoorSelector value="Sliding door" />
+          <ConfiguratorDoorSelector value={t.configurator.slidingDoor} />
           <div className="flex shrink-0 gap-2">
             <ConfiguratorActionButton
-              label={sidebarOpen ? "Hide sidebar" : "Show sidebar"}
+              label={sidebarOpen ? t.configurator.hideSidebar : t.configurator.showSidebar}
               icon={sidebarOpen ? "open_in_full" : "close_fullscreen"}
               pressed={!sidebarOpen}
               onClick={() => onSidebarOpenChange(!sidebarOpen)}
             />
-            {ACTION_BUTTONS.map((action) => (
+            {actionButtons.map((action) => (
               <ConfiguratorActionButton
                 key={action.label}
                 label={action.label}

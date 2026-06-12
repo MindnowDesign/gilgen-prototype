@@ -48,7 +48,7 @@ export function ConfiguratorOptionSection({
                 "flex flex-col items-center justify-center rounded-[4px] border px-2 text-center text-xs font-medium leading-snug transition-colors",
                 showImages
                   ? "min-h-[4.75rem] gap-1.5 py-2"
-                  : "h-14",
+                  : "min-h-14 py-2",
                 selected
                   ? "border-black-900 bg-black-900 text-white"
                   : "border-black-100/80 bg-transparent text-black-950 hover:border-yellow-300 hover:bg-yellow-300"
@@ -63,7 +63,7 @@ export function ConfiguratorOptionSection({
                   />
                 </span>
               ) : null}
-              <span>{option.label}</span>
+              <span className="whitespace-pre-line">{option.label}</span>
             </button>
           );
         })}

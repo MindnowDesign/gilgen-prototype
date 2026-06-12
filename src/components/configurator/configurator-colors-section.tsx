@@ -4,7 +4,16 @@ import {
   CONFIGURATOR_COLOR_OPTIONS,
   type ConfiguratorColorId,
 } from "@/components/configurator/configurator-colors";
+import { useLanguage } from "@/i18n/language-provider";
 import { cn } from "@/lib/utils";
+
+const COLOR_LABEL_KEYS = {
+  "natural-aluminium": "naturalAluminium",
+  "anthracite-black": "anthraciteBlack",
+  "pure-white": "pureWhite",
+  "stainless-steel": "stainlessSteel",
+  custom: "custom",
+} as const;
 
 const COLOR_BUTTON_CLASS =
   "flex aspect-square w-full items-center justify-center rounded-[4px] border border-black-100/80 bg-white transition-colors hover:border-yellow-300 hover:bg-yellow-300";
@@ -78,27 +87,34 @@ export function ConfiguratorColorsSection({
   selectedColorId,
   onColorChange,
 }: ConfiguratorColorsSectionProps) {
+  const { t } = useLanguage();
+
   return (
     <section className="mt-8" aria-labelledby="configurator-colors-label">
       <h3
         id="configurator-colors-label"
         className="text-sm font-semibold text-black-950"
       >
-        Colors
+        {t.configurator.colors}
       </h3>
 
       <div className="mt-3 grid w-full grid-cols-5 gap-2">
-        {CONFIGURATOR_COLOR_OPTIONS.map((option) => (
-          <ConfiguratorColorSwatch
-            key={option.id}
-            label={option.label}
-            color={"color" in option ? option.color : undefined}
-            custom={"custom" in option ? option.custom : false}
-            ring={"ring" in option ? option.ring : false}
-            selected={selectedColorId === option.id}
-            onSelect={() => onColorChange(option.id)}
-          />
-        ))}
+        {CONFIGURATOR_COLOR_OPTIONS.map((option) => {
+          const labelKey = COLOR_LABEL_KEYS[option.id];
+          const label = t.configurator.colorLabels[labelKey];
+
+          return (
+            <ConfiguratorColorSwatch
+              key={option.id}
+              label={label}
+              color={"color" in option ? option.color : undefined}
+              custom={"custom" in option ? option.custom : false}
+              ring={"ring" in option ? option.ring : false}
+              selected={selectedColorId === option.id}
+              onSelect={() => onColorChange(option.id)}
+            />
+          );
+        })}
       </div>
     </section>
   );

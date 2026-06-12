@@ -1,26 +1,14 @@
+"use client";
+
 import Link from "next/link";
 
+import { AppHeader } from "@/components/layout/app-header";
 import { MaterialIcon } from "@/components/icons/material-icon";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/i18n/language-provider";
 import { cn } from "@/lib/utils";
 
-import { GilgenLogo } from "./gilgen-logo";
 import { WelcomeBackground } from "./welcome-background";
-
-const STEPS = [
-  { number: "01", label: "Questions" },
-  { number: "02", label: "Configurator" },
-] as const;
-
-const HERO_TITLE = "Welcome to Gilgen Configurator";
-
-const HERO_DESCRIPTION = (
-  <>
-    Before we start, please answer these{" "}
-    <span className="font-semibold">3 questions</span> to design the best
-    experience and solution for you and your needs.
-  </>
-);
 
 const heroTitleClassName =
   "text-4xl font-bold tracking-tight text-white md:text-5xl lg:text-[3.25rem] lg:leading-tight";
@@ -40,6 +28,13 @@ const footerClassName =
   "flex flex-col gap-4 px-8 py-8 text-xs text-black-400 sm:flex-row sm:items-center sm:justify-between md:px-12";
 
 function WelcomeHeroSteps({ visible }: { visible: boolean }) {
+  const { t } = useLanguage();
+
+  const steps = [
+    { number: "01", label: t.welcome.stepQuestions },
+    { number: "02", label: t.welcome.stepConfigurator },
+  ] as const;
+
   return (
     <div
       className={cn(
@@ -49,7 +44,7 @@ function WelcomeHeroSteps({ visible }: { visible: boolean }) {
       role={visible ? "list" : undefined}
       aria-hidden={!visible}
     >
-      {STEPS.map((step, index) => (
+      {steps.map((step, index) => (
         <div key={step.number} className="flex items-center" role="listitem">
           {index > 0 ? (
             <span
@@ -87,17 +82,23 @@ function WelcomeHeroBlock({
   showSteps: boolean;
   showButton: boolean;
 }) {
+  const { t } = useLanguage();
+
   return (
     <div className={heroSectionClassName}>
       <div className={cn(!showHeading && "invisible")} aria-hidden={!showHeading}>
-        <h1 className={heroTitleClassName}>{HERO_TITLE}</h1>
+        <h1 className={heroTitleClassName}>{t.welcome.heroTitle}</h1>
       </div>
 
       <div
         className={cn(!showDescription && "invisible")}
         aria-hidden={!showDescription}
       >
-        <p className={heroDescriptionClassName}>{HERO_DESCRIPTION}</p>
+        <p className={heroDescriptionClassName}>
+          {t.welcome.heroDescriptionBefore}{" "}
+          <span className="font-semibold">{t.welcome.heroDescriptionHighlight}</span>
+          {t.welcome.heroDescriptionAfter}
+        </p>
       </div>
 
       <WelcomeHeroSteps visible={showSteps} />
@@ -105,7 +106,7 @@ function WelcomeHeroBlock({
       <div className={cn("mt-14", !showButton && "invisible")} aria-hidden={!showButton}>
         <Button asChild variant="cta">
           <Link href="/configure">
-            Start
+            {t.common.start}
             <MaterialIcon name="arrow_forward" size={20} weight={300} />
           </Link>
         </Button>
@@ -115,17 +116,19 @@ function WelcomeHeroBlock({
 }
 
 function WelcomeFooter({ visible = true }: { visible?: boolean }) {
+  const { t } = useLanguage();
+
   return (
     <footer className={cn(footerClassName, !visible && "invisible")} aria-hidden={!visible}>
-      <p>© 2026 Gilgen Door Systems. All rights reserved.</p>
+      <p>{t.welcome.copyright}</p>
       <div className="flex flex-col gap-2 sm:items-end">
         <p>
-          Need help?{" "}
+          {t.welcome.needHelp}{" "}
           <Link
             href="#"
             className="font-semibold text-white underline-offset-2 hover:underline"
           >
-            Contact us
+            {t.welcome.contactUs}
           </Link>
         </p>
         <Button
@@ -133,7 +136,7 @@ function WelcomeFooter({ visible = true }: { visible?: boolean }) {
           variant="link"
           className="h-auto p-0 text-xs text-black-300 hover:text-white"
         >
-          <Link href="/configurator">Go to configurator</Link>
+          <Link href="/configurator">{t.common.goToConfigurator}</Link>
         </Button>
       </div>
     </footer>
@@ -146,9 +149,7 @@ export function WelcomeScreen() {
       <WelcomeBackground
         heroOverlay={
           <div className={pageGridClassName}>
-            <header className="invisible flex items-center px-8 py-6">
-              <GilgenLogo variant="dark" />
-            </header>
+            <AppHeader logoVariant="dark" className="invisible" />
 
             <main className={heroMainClassName}>
               <WelcomeHeroBlock
@@ -165,9 +166,7 @@ export function WelcomeScreen() {
       />
 
       <div className={cn("relative z-10 text-white", pageGridClassName)}>
-        <header className="flex items-center px-8 py-6">
-          <GilgenLogo variant="dark" />
-        </header>
+        <AppHeader logoVariant="dark" />
 
         <main className={heroMainClassName}>
           <WelcomeHeroBlock

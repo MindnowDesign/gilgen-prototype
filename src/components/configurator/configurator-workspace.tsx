@@ -8,22 +8,18 @@ import {
 } from "@/components/configurator/configurator-colors";
 import { ConfiguratorProductPanel } from "@/components/configurator/configurator-product-panel";
 import { ConfiguratorSidebar } from "@/components/configurator/configurator-sidebar";
+import { useLanguage } from "@/i18n/language-provider";
 import { cn } from "@/lib/utils";
 
 const SIDEBAR_TRANSITION =
   "duration-500 ease-out motion-reduce:transition-none";
 
 type ConfiguratorWorkspaceProps = {
-  doorName?: string;
-  description?: string;
   backHref?: string;
 };
 
-export function ConfiguratorWorkspace({
-  doorName = "Sliding Door System",
-  description = "Commercial Application · High Traffic",
-  backHref,
-}: ConfiguratorWorkspaceProps) {
+export function ConfiguratorWorkspace({ backHref }: ConfiguratorWorkspaceProps) {
+  const { t } = useLanguage();
   const [selectedColorId, setSelectedColorId] = useState<ConfiguratorColorId>(
     DEFAULT_CONFIGURATOR_COLOR_ID
   );
@@ -42,8 +38,8 @@ export function ConfiguratorWorkspace({
       )}
     >
       <ConfiguratorProductPanel
-        doorName={doorName}
-        description={description}
+        doorName={t.configurator.doorName}
+        description={t.configurator.description}
         backHref={backHref}
         selectedColorId={selectedColorId}
         sidebarOpen={sidebarOpen}

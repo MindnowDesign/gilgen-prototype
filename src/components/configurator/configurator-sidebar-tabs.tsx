@@ -9,18 +9,15 @@ import { ConfiguratorGlassType } from "@/components/configurator/configurator-gl
 import { ConfiguratorProfileStyle } from "@/components/configurator/configurator-profile-style";
 import { MaterialIcon } from "@/components/icons/material-icon";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/i18n/language-provider";
 import { cn } from "@/lib/utils";
 
-const SIDEBAR_TABS = [
-  { id: "design", label: "Design", icon: "palette" },
-  { id: "performance", label: "Performance", icon: "tune" },
-  { id: "summary", label: "Summary", icon: "description" },
-] as const;
-
-type SidebarTabId = (typeof SIDEBAR_TABS)[number]["id"];
+type SidebarTabId = "design" | "performance" | "summary";
 
 type FolderTabProps = {
-  tab: (typeof SIDEBAR_TABS)[number];
+  id: SidebarTabId;
+  label: string;
+  icon: string;
   selected: boolean;
   isFirst: boolean;
   isLast: boolean;
@@ -28,7 +25,9 @@ type FolderTabProps = {
 };
 
 function FolderTab({
-  tab,
+  id,
+  label,
+  icon,
   selected,
   isFirst,
   isLast,
@@ -38,12 +37,12 @@ function FolderTab({
     <button
       type="button"
       role="tab"
-      id={`configurator-tab-${tab.id}`}
+      id={`configurator-tab-${id}`}
       aria-selected={selected}
-      aria-controls={`configurator-tabpanel-${tab.id}`}
+      aria-controls={`configurator-tabpanel-${id}`}
       onClick={onSelect}
       className={cn(
-        "relative m-0 flex w-[120px] shrink-0 items-center justify-center gap-1.5 rounded-t-[4px] border-0 px-3 py-2.5 text-xs transition-colors",
+        "relative m-0 flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-t-[4px] border-0 px-2 py-2.5 text-xs transition-colors",
         selected
           ? "z-10 -mb-px bg-white pb-[calc(0.625rem+1px)] font-semibold text-black-950"
           : "bg-black-100 font-normal text-black-500 hover:text-black-800"
@@ -61,8 +60,8 @@ function FolderTab({
           className="absolute bottom-0 -right-1 size-1 rounded-bl-[4px] shadow-[-2px_0_0_0_white]"
         />
       ) : null}
-      <MaterialIcon name={tab.icon} size={16} weight={300} />
-      {tab.label}
+      <MaterialIcon name={icon} size={16} weight={300} className="shrink-0" />
+      <span className="min-w-0 truncate">{label}</span>
     </button>
   );
 }
@@ -76,6 +75,8 @@ function ConfiguratorSidebarTabPanel({
   selectedColorId: ConfiguratorColorId;
   onColorChange: (colorId: ConfiguratorColorId) => void;
 }) {
+  const { t } = useLanguage();
+
   return (
     <div
       role="tabpanel"
@@ -97,13 +98,13 @@ function ConfiguratorSidebarTabPanel({
 
       {activeTab === "performance" ? (
         <p className="text-sm leading-relaxed text-black-500">
-          Performance options will appear here.
+          {t.configurator.performancePlaceholder}
         </p>
       ) : null}
 
       {activeTab === "summary" ? (
         <p className="text-sm leading-relaxed text-black-500">
-          Your configuration summary will appear here.
+          {t.configurator.summaryPlaceholder}
         </p>
       ) : null}
     </div>
@@ -117,25 +118,39 @@ export function ConfiguratorSidebar({
   selectedColorId: ConfiguratorColorId;
   onColorChange: (colorId: ConfiguratorColorId) => void;
 }) {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState<SidebarTabId>("design");
-  const activeTabIndex = SIDEBAR_TABS.findIndex((tab) => tab.id === activeTab);
-  const nextTab = SIDEBAR_TABS[activeTabIndex + 1];
+
+  const sidebarTabs = [
+    { id: "design" as const, label: t.configurator.tabs.design, icon: "palette" },
+    {
+      id: "performance" as const,
+      label: t.configurator.tabs.performance,
+      icon: "tune",
+    },
+    { id: "summary" as const, label: t.configurator.tabs.summary, icon: "description" },
+  ];
+
+  const activeTabIndex = sidebarTabs.findIndex((tab) => tab.id === activeTab);
+  const nextTab = sidebarTabs[activeTabIndex + 1];
 
   return (
     <div className="relative flex h-full w-full min-h-0 flex-col">
       <div className="pt-2">
         <div
           role="tablist"
-          aria-label="Door configuration sections"
+          aria-label={t.configurator.tabs.ariaLabel}
           className="mt-4 flex items-start gap-2 bg-surface"
         >
-          {SIDEBAR_TABS.map((tab, index) => (
+          {sidebarTabs.map((tab, index) => (
             <FolderTab
               key={tab.id}
-              tab={tab}
+              id={tab.id}
+              label={tab.label}
+              icon={tab.icon}
               selected={activeTab === tab.id}
               isFirst={index === 0}
-              isLast={index === SIDEBAR_TABS.length - 1}
+              isLast={index === sidebarTabs.length - 1}
               onSelect={() => setActiveTab(tab.id)}
             />
           ))}
@@ -156,7 +171,7 @@ export function ConfiguratorSidebar({
             <p className="text-2xl font-bold tracking-tight text-white">
               CHF 10&apos;000
             </p>
-            <p className="mt-1 text-xs text-black-400">Total price</p>
+            <p className="mt-1 text-xs text-black-400">{t.configurator.totalPrice}</p>
           </div>
 
           <Button
@@ -168,7 +183,7 @@ export function ConfiguratorSidebar({
               if (nextTab) setActiveTab(nextTab.id);
             }}
           >
-            Next
+            {t.common.next}
             <MaterialIcon name="arrow_forward" size={20} weight={300} />
           </Button>
         </div>

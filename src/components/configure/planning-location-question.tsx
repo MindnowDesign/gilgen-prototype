@@ -3,47 +3,61 @@
 import { ConfigureOptionCard } from "@/components/configure/configure-option-card";
 import { ConfigureQuestionLayout } from "@/components/configure/configure-question-layout";
 import { useConfigureSelection } from "@/components/configure/use-configure-selection";
+import { useLanguage } from "@/i18n/language-provider";
 
 const INSTALLATION_OPTIONS = [
   {
     id: "commercial",
-    title: "Commercial Building",
-    description:
-      "Offices, retail, hospitality, and other commercial spaces.",
     icon: "apartment",
     href: "/configure/planning/priority",
   },
   {
     id: "healthcare",
-    title: "Healthcare Facility",
-    description: "Hospitals, clinics, and care environments.",
     icon: "local_hospital",
     href: "/configure/planning/priority",
   },
   {
     id: "industrial",
-    title: "Industrial Facility",
-    description: "Warehouses, production sites, and logistics hubs.",
     icon: "factory",
     href: "/configure/planning/priority",
   },
 ] as const;
 
 export function PlanningLocationQuestion() {
+  const { t } = useLanguage();
+  const copy = t.configure.planningLocation;
   const { isSelected, toggleSelect, navigation } = useConfigureSelection(
     INSTALLATION_OPTIONS
   );
+
+  const options = [
+    {
+      ...INSTALLATION_OPTIONS[0],
+      title: copy.commercial.title,
+      description: copy.commercial.description,
+    },
+    {
+      ...INSTALLATION_OPTIONS[1],
+      title: copy.healthcare.title,
+      description: copy.healthcare.description,
+    },
+    {
+      ...INSTALLATION_OPTIONS[2],
+      title: copy.industrial.title,
+      description: copy.industrial.description,
+    },
+  ];
 
   return (
     <ConfigureQuestionLayout
       step={2}
       totalSteps={3}
       backHref="/configure"
-      title="Where will the door be installed?"
-      subtitle="Choose the environment that best describes your installation."
+      title={copy.title}
+      subtitle={copy.subtitle}
       navigation={navigation}
     >
-      {INSTALLATION_OPTIONS.map((option, index) => (
+      {options.map((option, index) => (
         <ConfigureOptionCard
           key={option.id}
           index={index + 1}

@@ -3,48 +3,60 @@
 import { ConfigureOptionCard } from "@/components/configure/configure-option-card";
 import { ConfigureQuestionLayout } from "@/components/configure/configure-question-layout";
 import { useConfigureSelection } from "@/components/configure/use-configure-selection";
+import { useLanguage } from "@/i18n/language-provider";
 
 const NEED_OPTIONS = [
   {
     id: "exact",
-    title: "Exact Replacement",
-    description:
-      "Match the existing system with a direct, compatible replacement.",
     icon: "sync",
     href: "/configurator",
   },
   {
     id: "performance",
-    title: "Improved Performance",
-    description:
-      "Upgrade reliability, efficiency, or operational performance.",
     icon: "speed",
     href: "/configurator",
   },
   {
     id: "modern",
-    title: "Modern Alternative",
-    description:
-      "Explore updated technology and contemporary door solutions.",
     icon: "auto_awesome",
     href: "/configurator",
   },
 ] as const;
 
 export function ReplacingNeedQuestion() {
+  const { t } = useLanguage();
+  const copy = t.configure.replacingNeed;
   const { isSelected, toggleSelect, navigation } =
     useConfigureSelection(NEED_OPTIONS);
+
+  const options = [
+    {
+      ...NEED_OPTIONS[0],
+      title: copy.exact.title,
+      description: copy.exact.description,
+    },
+    {
+      ...NEED_OPTIONS[1],
+      title: copy.performance.title,
+      description: copy.performance.description,
+    },
+    {
+      ...NEED_OPTIONS[2],
+      title: copy.modern.title,
+      description: copy.modern.description,
+    },
+  ];
 
   return (
     <ConfigureQuestionLayout
       step={3}
       totalSteps={3}
       backHref="/configure/replacing/type"
-      title="What do you need?"
-      subtitle="Choose the outcome that best describes your replacement goal."
+      title={copy.title}
+      subtitle={copy.subtitle}
       navigation={navigation}
     >
-      {NEED_OPTIONS.map((option, index) => (
+      {options.map((option, index) => (
         <ConfigureOptionCard
           key={option.id}
           index={index + 1}

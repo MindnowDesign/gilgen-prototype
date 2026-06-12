@@ -1,6 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 
+import { useLanguage } from "@/i18n/language-provider";
 import { cn } from "@/lib/utils";
 
 type GilgenLogoProps = {
@@ -9,8 +12,10 @@ type GilgenLogoProps = {
 };
 
 export function GilgenLogo({ variant = "light", href = "/" }: GilgenLogoProps) {
+  const { t } = useLanguage();
+
   return (
-    <Link href={href} aria-label="Back to start" className="shrink-0">
+    <Link href={href} aria-label={t.common.backToStart} className="shrink-0">
       <Image
         src="/brand/gilgen-logo.svg"
         alt="Gilgen Door Systems"

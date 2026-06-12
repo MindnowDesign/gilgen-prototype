@@ -2,23 +2,13 @@ import { ConfiguratorLayout } from "@/components/configurator/configurator-layou
 import { ConfiguratorWorkspace } from "@/components/configurator/configurator-workspace";
 
 type ConfiguratorScreenProps = {
-  doorName?: string;
-  description?: string;
   backHref?: string;
 };
 
-export function ConfiguratorScreen({
-  doorName,
-  description,
-  backHref,
-}: ConfiguratorScreenProps) {
+export function ConfiguratorScreen({ backHref }: ConfiguratorScreenProps) {
   return (
     <ConfiguratorLayout>
-      <ConfiguratorWorkspace
-        doorName={doorName}
-        description={description}
-        backHref={backHref}
-      />
+      <ConfiguratorWorkspace backHref={backHref} />
     </ConfiguratorLayout>
   );
 }

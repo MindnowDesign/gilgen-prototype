@@ -70,7 +70,7 @@ export function ConfigureOptionCard({
         <div className="flex flex-col gap-2">
           <CardTitle
             className={cn(
-              "text-lg font-semibold leading-tight text-black-950",
+              "text-lg font-semibold leading-tight whitespace-nowrap text-black-950",
               selected && "text-black-50"
             )}
           >
@@ -78,7 +78,7 @@ export function ConfigureOptionCard({
           </CardTitle>
           <CardDescription
             className={cn(
-              "text-sm leading-relaxed text-black-500 transition-colors group-hover/card:text-black-800",
+              "min-h-[2.75rem] text-sm leading-[1.375rem] text-black-500 transition-colors group-hover/card:text-black-800",
               selected && "text-black-200 group-hover/card:text-black-200"
             )}
           >
